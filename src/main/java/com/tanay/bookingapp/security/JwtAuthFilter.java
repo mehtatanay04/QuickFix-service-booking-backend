@@ -18,6 +18,12 @@ HttpServletRequest request,
 HttpServletResponse response,
 FilterChain filterChain
 ) throws ServletException, IOException {
+	String path = request.getRequestURI();
+
+	if(path.equals("/api/auth/login") || path.equals("/api/auth/register")) {
+	filterChain.doFilter(request, response);
+	return;
+	}
 
 String authHeader = request.getHeader("Authorization");
 

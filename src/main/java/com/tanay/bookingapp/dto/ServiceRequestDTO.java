@@ -1,19 +1,35 @@
 package com.tanay.bookingapp.dto;
 
 public class ServiceRequestDTO {
+
 private String name;
 private String description;
-private double price;
+private Double price;
 
-private String getName() {
-	return name;
+public ServiceRequestDTO() {
 }
 
-private String getDescription() {
-	return description;
+public String getName() {
+return name;
 }
 
-private Double getPrice() {
-	return price;
+public String getDescription() {
+return description;
+}
+
+public Double getPrice() {
+return price;
+}
+
+public void setName(String name) {
+this.name = name;
+}
+
+public void setDescription(String description) {
+this.description = description;
+}
+
+public void setPrice(Double price) {
+this.price = price;
 }
 }
