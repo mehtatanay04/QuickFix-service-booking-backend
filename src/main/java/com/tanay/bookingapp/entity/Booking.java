@@ -2,6 +2,8 @@ package com.tanay.bookingapp.entity;
 import java.time.LocalDateTime;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -24,12 +26,13 @@ private User user;
 @JoinColumn(name = "service_id")
 private ServiceEntity service;
 private LocalDateTime bookingTime;
-private String status;
+@Enumerated(EnumType.STRING)
+private BookingStatus status;
 
 public Booking() {
 }
 
-public Booking (User user, ServiceEntity service, LocalDateTime bookingTime, String status) {
+public Booking (User user, ServiceEntity service, LocalDateTime bookingTime, BookingStatus status) {
 	this.user = user;
 	this.service = service;
 	this.bookingTime = bookingTime;
@@ -54,11 +57,11 @@ public LocalDateTime getBookingTime() {
 	return bookingTime;
 }
 
-public String getStatus() {
+public BookingStatus getStatus() {
 	return status;
 }
 
-public void setStatus(String status) {
+public void setStatus(BookingStatus status) {
 	this.status = status;
 }
 

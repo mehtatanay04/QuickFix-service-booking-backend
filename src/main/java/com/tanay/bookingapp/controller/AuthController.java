@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.tanay.bookingapp.dto.LoginRequestDTO;
 import com.tanay.bookingapp.dto.LoginResponseDTO;
+import com.tanay.bookingapp.dto.RegisterRequestDTO;
 import com.tanay.bookingapp.dto.UserResponseDTO;
 import com.tanay.bookingapp.entity.User;
 import com.tanay.bookingapp.security.JwtUtil;
@@ -20,16 +21,22 @@ public class AuthController {
 		}
 	
 	@PostMapping("/register")
-	public UserResponseDTO register(@RequestBody User user) {
+	public UserResponseDTO register(@RequestBody RegisterRequestDTO request) {
+		System.out.println("DTO Password: " + request.getPassword());
+		User user = new User();
+		user.setName(request.getName());
+		user.setEmail(request.getEmail());
+		user.setPassword(request.getPassword());
+
 		User savedUser = userService.registerUser(user);
-		
+
 		return new UserResponseDTO(
-				savedUser.getId(),
-				savedUser.getName(),
-				savedUser.getEmail(),
-				savedUser.getRole()
-				);
-	}
+		savedUser.getId(),
+		savedUser.getName(),
+		savedUser.getEmail(),
+		savedUser.getRole()
+		);
+		}
 	
 	@PostMapping("/login")
 	public LoginResponseDTO login(@RequestBody LoginRequestDTO loginRequest) {

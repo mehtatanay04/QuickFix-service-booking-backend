@@ -1,8 +1,10 @@
 package com.tanay.bookingapp.controller;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -10,6 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.tanay.bookingapp.dto.BookingRequestDTO;
 import com.tanay.bookingapp.entity.Booking;
+import com.tanay.bookingapp.entity.BookingStatus;
 import com.tanay.bookingapp.entity.ServiceEntity;
 import com.tanay.bookingapp.entity.User;
 import com.tanay.bookingapp.repository.BookingRepository;
@@ -31,6 +34,16 @@ private ServiceRepository serviceRepository;
 @Autowired
 private UserRepository userRepository;
 
+@GetMapping("/my-bookings")
+public List<Booking> getUserBookings(HttpServletRequest request) {
+
+Number userIdNumber = (Number) request.getAttribute("userId");
+Long userId = userIdNumber.longValue();
+
+return bookingRepository.findByUserId(userId);
+}
+
+
 @PostMapping("/book")
 public String createBooking(
 @RequestBody BookingRequestDTO dto,
@@ -49,7 +62,7 @@ Booking booking = new Booking(
 user,
 service,
 LocalDateTime.now(),
-"PENDING"
+BookingStatus.PENDING
 );
 
 bookingRepository.save(booking);
