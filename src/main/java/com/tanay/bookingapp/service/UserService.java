@@ -17,15 +17,23 @@ public class UserService {
 	}
 	
 	public User registerUser(User user) {
+
 		User existingUser = userRepository.findByEmail(user.getEmail());
+
 		if(existingUser != null) {
-			throw new EmailAlreadyExistsException("Email already registered");
+		throw new EmailAlreadyExistsException("Email already registered");
 		}
-	
+
 		BCryptPasswordEncoder encoder  = new BCryptPasswordEncoder();
+
+		// ✅ encode password
 		user.setPassword(encoder.encode(user.getPassword()));
+
+		// 🔥 ADD THIS LINE (IMPORTANT)
+		user.setRole("USER");
+
 		return userRepository.save(user);
-	}
+		}
 		public User loginUser(String email, String password) {
 			User user = userRepository.findByEmail(email);
 			if (user == null) {

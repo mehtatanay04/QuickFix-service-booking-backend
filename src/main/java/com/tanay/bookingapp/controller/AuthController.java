@@ -22,7 +22,6 @@ public class AuthController {
 	
 	@PostMapping("/register")
 	public UserResponseDTO register(@RequestBody RegisterRequestDTO request) {
-		System.out.println("DTO Password: " + request.getPassword());
 		User user = new User();
 		user.setName(request.getName());
 		user.setEmail(request.getEmail());
