@@ -1,45 +1,43 @@
 package com.tanay.bookingapp.security;
 
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jws;
-import io.jsonwebtoken.JwtException;
-
-import io.jsonwebtoken.SignatureAlgorithm;
-import io.jsonwebtoken.security.Keys;
-
-import java.security.Key;
 import java.util.Date;
 
+import javax.crypto.SecretKey;
+
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
+
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.security.Keys;
+
+@Component
 public class JwtUtil {
 
-private static final long EXPIRATION_TIME = 24 * 60 * 60 * 1000; // 1 day
-private static final Key key = Keys.secretKeyFor(SignatureAlgorithm.HS256);
+private final SecretKey key;
 
-public static String generateToken(Long userId, String email, String role) {
+public JwtUtil(@Value("${jwt.secret}") String secret) {
+this.key = Keys.hmacShaKeyFor(secret.getBytes());
+}
+
+public String generateToken(Long userId, String email, String role) {
 
 return Jwts.builder()
 .setSubject(email)
 .claim("id", userId)
 .claim("role", role)
 .setIssuedAt(new Date())
-.setExpiration(new Date(System.currentTimeMillis() + EXPIRATION_TIME))
+.setExpiration(new Date(System.currentTimeMillis() + 86400000)) // 1 day
 .signWith(key)
 .compact();
 }
-public static Claims validateToken(String token) {
 
-try {
-Jws<Claims> claimsJws = Jwts.parserBuilder()
+public Claims extractClaims(String token) {
+
+return Jwts.parserBuilder()
 .setSigningKey(key)
 .build()
-.parseClaimsJws(token);
-
-return claimsJws.getBody();
-
-} catch (JwtException e) {
-return null;
+.parseClaimsJws(token)
+.getBody();
 }
-}
-
 }
