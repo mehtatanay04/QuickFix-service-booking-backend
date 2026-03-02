@@ -2,6 +2,8 @@ package com.tanay.bookingapp.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -25,8 +27,9 @@ private String email;
 
 private String password;
 
-@Column(nullable = false)
-private String role;   // USER, PROVIDER, ADMIN
+@Enumerated(EnumType.STRING)
+@Column(nullable=false)
+private Role role;
 
 public User() {}
 
@@ -62,11 +65,13 @@ public void setPassword(String password) {
 this.password = password;
 }
 
-public String getRole() {
-return role;
+public Role getRole() {
+	return role;
 }
 
-public void setRole(String role) {
-this.role = role;
+public void setRole(Role role) {
+	this.role = role;
 }
+
+
 }

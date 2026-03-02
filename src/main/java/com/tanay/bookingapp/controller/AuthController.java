@@ -17,54 +17,52 @@ import com.tanay.bookingapp.service.UserService;
 @RequestMapping("/api/auth")
 public class AuthController {
 
-private final UserService userService;
-private final JwtUtil jwtUtil;
+    private final UserService userService;
+    private final JwtUtil jwtUtil;
 
-public AuthController(UserService userService, JwtUtil jwtUtil) {
-this.userService = userService;
-this.jwtUtil = jwtUtil;
-}
+    public AuthController(UserService userService, JwtUtil jwtUtil) {
+        this.userService = userService;
+        this.jwtUtil = jwtUtil;
+    }
 
-// ✅ REGISTER
-@PostMapping("/register")
-public UserResponseDTO register(@RequestBody RegisterRequestDTO request) {
+    // ✅ REGISTER
+    @PostMapping("/register")
+    public UserResponseDTO register(@RequestBody RegisterRequestDTO request) {
 
-User user = new User();
-user.setName(request.getName());
-user.setEmail(request.getEmail());
-user.setPassword(request.getPassword());
+        User user = new User();
+        user.setName(request.getName());
+        user.setEmail(request.getEmail());
+        user.setPassword(request.getPassword());
 
-User savedUser = userService.registerUser(user);
+        User savedUser = userService.registerUser(user);
 
-return new UserResponseDTO(
-savedUser.getId(),
-savedUser.getName(),
-savedUser.getEmail(),
-savedUser.getRole()
-);
-}
+        return new UserResponseDTO(
+                savedUser.getId(),
+                savedUser.getName(),
+                savedUser.getEmail(),
+                savedUser.getRole().name()   
+        );
+    }
 
-// ✅ LOGIN
-@PostMapping("/login")
-public LoginResponseDTO login(@RequestBody LoginRequestDTO loginRequest) {
+    // ✅ LOGIN
+    @PostMapping("/login")
+    public LoginResponseDTO login(@RequestBody LoginRequestDTO loginRequest) {
 
-User user = userService.loginUser(
-loginRequest.getEmail(),
-loginRequest.getPassword()
-);
+        User user = userService.loginUser(
+                loginRequest.getEmail(),
+                loginRequest.getPassword()
+        );
 
-// 🔥 FIXED HERE (no static call)
-String token = jwtUtil.generateToken(
-user.getId(),
-user.getEmail(),
-user.getRole()
-);
+        String token = jwtUtil.generateToken(
+                user.getId(),
+                user.getEmail(),
+                user.getRole().name()   
+        );
 
-return new LoginResponseDTO(
-token,
-user.getEmail(),
-user.getRole()
-);
-}
-
+        return new LoginResponseDTO(
+                token,
+                user.getEmail(),
+                user.getRole().name()
+        );
+    }
 }
