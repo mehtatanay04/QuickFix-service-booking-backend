@@ -15,8 +15,10 @@ import com.tanay.bookingapp.dto.ServiceRequestDTO;
 import com.tanay.bookingapp.dto.UpdateBookingStatusDTO;
 import com.tanay.bookingapp.entity.Booking;
 import com.tanay.bookingapp.entity.BookingStatus;
+import com.tanay.bookingapp.entity.Provider;
 import com.tanay.bookingapp.entity.ServiceEntity;
 import com.tanay.bookingapp.repository.BookingRepository;
+import com.tanay.bookingapp.repository.ProviderRepository;
 import com.tanay.bookingapp.repository.ServiceRepository;
 import com.tanay.bookingapp.security.RoleChecker;
 
@@ -43,6 +45,7 @@ public class AdminController {
 @Autowired
 private ServiceRepository serviceRepository;
 
+
 @PutMapping("/booking/{id}/status")
 public String updateBookingStatus(
 @PathVariable Long id,
@@ -64,7 +67,36 @@ bookingRepository.save(booking);
 
 return "Booking status updated to " + dto.getStatus();
 }
+@Autowired
+private ProviderRepository providerRepository;
+@GetMapping("/providers")
+public List<Provider> getAllProviders(HttpServletRequest request) {
 
+if(!RoleChecker.hasRole(request, "ADMIN")) {
+throw new RuntimeException("Forbidden: Admin access only");
+}
+
+return providerRepository.findAll();
+}
+@PutMapping("/provider/{id}/approve")
+public String approveProvider(
+@PathVariable Long id,
+HttpServletRequest request
+) {
+
+if(!RoleChecker.hasRole(request, "ADMIN")) {
+throw new RuntimeException("Forbidden: Admin access only");
+}
+
+Provider provider = providerRepository.findById(id)
+.orElseThrow(() -> new RuntimeException("Provider not found"));
+
+provider.setApproved(true);
+
+providerRepository.save(provider);
+
+return "Provider approved successfully";
+}
 
 @GetMapping("/dashboard")
 public String adminDashboard(HttpServletRequest request) {
