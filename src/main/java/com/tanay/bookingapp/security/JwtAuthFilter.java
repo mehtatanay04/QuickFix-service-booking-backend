@@ -33,7 +33,11 @@ FilterChain filterChain
 
 String path = request.getRequestURI();
 
-if(path.equals("/api/auth/login") || path.equals("/api/auth/register")) {
+if(
+path.equals("/api/auth/login") ||
+path.equals("/api/auth/register") ||
+path.equals("/api/provider/register")
+) {
 filterChain.doFilter(request, response);
 return;
 }

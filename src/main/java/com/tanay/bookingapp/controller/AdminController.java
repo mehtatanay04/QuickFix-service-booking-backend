@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.tanay.bookingapp.dto.AssignProviderDTO;
 import com.tanay.bookingapp.dto.ServiceRequestDTO;
 import com.tanay.bookingapp.dto.UpdateBookingStatusDTO;
 import com.tanay.bookingapp.entity.Booking;
@@ -127,6 +128,30 @@ dto.getPrice()
 serviceRepository.save(service);
 
 return "Service created successfully";
+}
+
+@PutMapping("/booking/{id}/assign-provider")
+public String assignProviderToBooking(
+@PathVariable Long id,
+@RequestBody AssignProviderDTO dto,
+HttpServletRequest request
+) {
+
+if(!RoleChecker.hasRole(request, "ADMIN")) {
+throw new RuntimeException("Forbidden: Admin access only");
+}
+
+Booking booking = bookingRepository.findById(id)
+.orElseThrow(() -> new RuntimeException("Booking not found"));
+
+Provider provider = providerRepository.findById(dto.getProviderId())
+.orElseThrow(() -> new RuntimeException("Provider not found"));
+
+booking.setProvider(provider);
+
+bookingRepository.save(booking);
+
+return "Provider assigned successfully";
 }
 
 }
