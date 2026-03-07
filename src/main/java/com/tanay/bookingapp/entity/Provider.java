@@ -17,6 +17,7 @@ public class Provider {
     private String name;
     private String email;
     private String phone;
+    private String password;
 
     private String category;
     private int experience;    
@@ -51,4 +52,8 @@ public class Provider {
 
     public boolean isApproved() { return approved; }
     public void setApproved(boolean approved) { this.approved = approved; }
+
+	public String getPassword() {return password; }
+	public void setPassword(String password) {this.password = password; }
+    
 }
