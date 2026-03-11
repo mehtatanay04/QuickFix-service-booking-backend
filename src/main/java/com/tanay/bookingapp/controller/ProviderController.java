@@ -1,11 +1,13 @@
 package com.tanay.bookingapp.controller;
 
 import java.util.List;
-import com.tanay.bookingapp.security.JwtUtil;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -13,9 +15,11 @@ import org.springframework.web.bind.annotation.RestController;
 import com.tanay.bookingapp.dto.ProviderLoginDTO;
 import com.tanay.bookingapp.dto.ProviderRequestDTO;
 import com.tanay.bookingapp.entity.Booking;
+import com.tanay.bookingapp.entity.BookingStatus;
 import com.tanay.bookingapp.entity.Provider;
 import com.tanay.bookingapp.repository.BookingRepository;
 import com.tanay.bookingapp.repository.ProviderRepository;
+import com.tanay.bookingapp.security.JwtUtil;
 
 import jakarta.servlet.http.HttpServletRequest;
 
@@ -86,4 +90,31 @@ Long providerId = providerIdNumber.longValue();
 
 return bookingRepository.findByProviderId(providerId);
 }
+@PutMapping("/booking/{id}/complete")
+public String completeBooking(
+@PathVariable Long id,
+HttpServletRequest request
+){
+
+Number providerIdNumber = (Number) request.getAttribute("userId");
+Long providerId = providerIdNumber.longValue();
+
+Booking booking = bookingRepository.findById(id)
+.orElseThrow(() -> new RuntimeException("Booking not found"));
+
+if(booking.getProvider() == null){
+throw new RuntimeException("No provider assigned");
+}
+
+if(!booking.getProvider().getId().equals(providerId)){
+throw new RuntimeException("You are not assigned to this booking");
+}
+
+booking.setStatus(BookingStatus.COMPLETED);
+
+bookingRepository.save(booking);
+
+return "Booking completed successfully";
+}
+
 }
