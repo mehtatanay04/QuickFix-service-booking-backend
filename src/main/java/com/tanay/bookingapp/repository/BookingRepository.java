@@ -9,12 +9,14 @@ import com.tanay.bookingapp.entity.Booking;
 
 public interface BookingRepository extends JpaRepository<Booking, Long> {
 
-    List<Booking> findByUserId(Long userId);
-    List<Booking> findByProviderId(Long providerId);
+List<Booking> findByUserId(Long userId);
 
-    boolean existsByServiceIdAndBookingDateAndTimeSlot(
-            Long serviceId,
-            LocalDate bookingDate,
-            String timeSlot
-    );
+List<Booking> findByProviderId(Long providerId);
+
+boolean existsByServiceIdAndBookingDateAndTimeSlot(
+Long serviceId,
+LocalDate bookingDate,
+String timeSlot
+);
+
 }

@@ -2,122 +2,106 @@ package com.tanay.bookingapp.entity;
 
 import java.time.LocalDate;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 
 @Entity
 @Table(name = "bookings")
 public class Booking {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+@Id
+@GeneratedValue(strategy = GenerationType.IDENTITY)
+private Long id;
 
+@ManyToOne
+@JoinColumn(name = "user_id")
+private User user;
 
-    @ManyToOne
-    @JoinColumn(name = "user_id", nullable = false)
-    private User user;
+@ManyToOne
+@JoinColumn(name = "service_id")
+private ServiceEntity service;
 
-    @ManyToOne
-    @JoinColumn(name = "service_id", nullable = false)
-    private ServiceEntity service;
-    @Column(nullable = false)
-    private LocalDate bookingDate;
-    @Column(nullable = false)
-    private String timeSlot;
+@ManyToOne
+@JoinColumn(name = "provider_id")
+private Provider provider;
 
-    
-    @Column(nullable = false)
-    private String address;
+private LocalDate bookingDate;
 
+private String timeSlot;
 
-    private String notes;
+private String address;
 
+private String notes;
 
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
-    private BookingStatus status;
-    
-    @ManyToOne
-    @JoinColumn(name = "provider_id")
-    private Provider provider;
+@Enumerated(EnumType.STRING)
+private BookingStatus status;
 
-    public Booking() {
-    }
+public Booking() {}
 
+public Long getId() {
+return id;
+}
 
-    public Long getId() {
-        return id;
-    }
+public User getUser() {
+return user;
+}
 
-    public User getUser() {
-        return user;
-    }
+public void setUser(User user) {
+this.user = user;
+}
 
-    public void setUser(User user) {
-        this.user = user;
-    }
+public ServiceEntity getService() {
+return service;
+}
 
-    public ServiceEntity getService() {
-        return service;
-    }
+public void setService(ServiceEntity service) {
+this.service = service;
+}
 
-    public void setService(ServiceEntity service) {
-        this.service = service;
-    }
+public Provider getProvider() {
+return provider;
+}
 
-    public LocalDate getBookingDate() {
-        return bookingDate;
-    }
+public void setProvider(Provider provider) {
+this.provider = provider;
+}
 
-    public void setBookingDate(LocalDate bookingDate) {
-        this.bookingDate = bookingDate;
-    }
+public LocalDate getBookingDate() {
+return bookingDate;
+}
 
-    public String getTimeSlot() {
-        return timeSlot;
-    }
+public void setBookingDate(LocalDate bookingDate) {
+this.bookingDate = bookingDate;
+}
 
-    public void setTimeSlot(String timeSlot) {
-        this.timeSlot = timeSlot;
-    }
+public String getTimeSlot() {
+return timeSlot;
+}
 
-    public String getAddress() {
-        return address;
-    }
+public void setTimeSlot(String timeSlot) {
+this.timeSlot = timeSlot;
+}
 
-    public void setAddress(String address) {
-        this.address = address;
-    }
+public String getAddress() {
+return address;
+}
 
-    public String getNotes() {
-        return notes;
-    }
+public void setAddress(String address) {
+this.address = address;
+}
 
-    public void setNotes(String notes) {
-        this.notes = notes;
-    }
+public String getNotes() {
+return notes;
+}
 
-    public BookingStatus getStatus() {
-        return status;
-    }
+public void setNotes(String notes) {
+this.notes = notes;
+}
 
-    public void setStatus(BookingStatus status) {
-        this.status = status;
-    }
-    public Provider getProvider() {
-        return provider;
-    }
+public BookingStatus getStatus() {
+return status;
+}
 
-    public void setProvider(Provider provider) {
-        this.provider = provider;
-    }
+public void setStatus(BookingStatus status) {
+this.status = status;
+}
 }
