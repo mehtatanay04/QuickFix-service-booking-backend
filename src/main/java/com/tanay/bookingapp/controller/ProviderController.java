@@ -116,5 +116,58 @@ bookingRepository.save(booking);
 
 return "Booking completed successfully";
 }
+@PutMapping("/accept-job/{bookingId}")
+public String acceptJob(
+@PathVariable Long bookingId,
+HttpServletRequest request
+){
+
+Number providerIdNumber = (Number) request.getAttribute("userId");
+Long providerId = providerIdNumber.longValue();
+
+Booking booking = bookingRepository.findById(bookingId)
+.orElseThrow(() -> new RuntimeException("Booking not found"));
+
+if(booking.getProvider() == null || !booking.getProvider().getId().equals(providerId)){
+throw new RuntimeException("This job is not assigned to you");
+}
+
+if(booking.getStatus() != BookingStatus.PENDING){
+throw new RuntimeException("Booking cannot be accepted");
+}
+
+booking.setStatus(BookingStatus.CONFIRMED);
+
+bookingRepository.save(booking);
+
+return "Job accepted successfully";
+}
+@PutMapping("/complete-job/{bookingId}")
+public String completeJob(
+@PathVariable Long bookingId,
+HttpServletRequest request
+){
+
+Number providerIdNumber = (Number) request.getAttribute("userId");
+Long providerId = providerIdNumber.longValue();
+
+Booking booking = bookingRepository.findById(bookingId)
+.orElseThrow(() -> new RuntimeException("Booking not found"));
+
+if(booking.getProvider() == null || !booking.getProvider().getId().equals(providerId)){
+throw new RuntimeException("This job is not assigned to you");
+}
+
+if(booking.getStatus() != BookingStatus.CONFIRMED){
+throw new RuntimeException("Booking must be confirmed first");
+}
+
+booking.setStatus(BookingStatus.COMPLETED);
+
+bookingRepository.save(booking);
+
+return "Job completed successfully";
+}
+
 
 }
