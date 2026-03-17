@@ -26,14 +26,17 @@ import jakarta.servlet.http.HttpServletRequest;
 @RestController
 @RequestMapping("/api/provider")
 public class ProviderController {
-	@Autowired
-	private JwtUtil jwtUtil;
+
+@Autowired
+private JwtUtil jwtUtil;
 
 @Autowired
 private ProviderRepository providerRepository;
 
 @Autowired
 private BookingRepository bookingRepository;
+
+//////////////////// REGISTER ////////////////////
 
 @PostMapping("/register")
 public String registerProvider(@RequestBody ProviderRequestDTO dto) {
@@ -53,6 +56,8 @@ providerRepository.save(provider);
 
 return "Provider registered successfully. Waiting for admin approval.";
 }
+
+//////////////////// LOGIN ////////////////////
 
 @PostMapping("/login")
 public String providerLogin(@RequestBody ProviderLoginDTO dto){
@@ -82,6 +87,8 @@ provider.getEmail(),
 return token;
 }
 
+//////////////////// MY JOBS ////////////////////
+
 @GetMapping("/my-jobs")
 public List<Booking> getProviderJobs(HttpServletRequest request){
 
@@ -90,32 +97,9 @@ Long providerId = providerIdNumber.longValue();
 
 return bookingRepository.findByProviderId(providerId);
 }
-@PutMapping("/booking/{id}/complete")
-public String completeBooking(
-@PathVariable Long id,
-HttpServletRequest request
-){
 
-Number providerIdNumber = (Number) request.getAttribute("userId");
-Long providerId = providerIdNumber.longValue();
+//////////////////// ACCEPT JOB ////////////////////
 
-Booking booking = bookingRepository.findById(id)
-.orElseThrow(() -> new RuntimeException("Booking not found"));
-
-if(booking.getProvider() == null){
-throw new RuntimeException("No provider assigned");
-}
-
-if(!booking.getProvider().getId().equals(providerId)){
-throw new RuntimeException("You are not assigned to this booking");
-}
-
-booking.setStatus(BookingStatus.COMPLETED);
-
-bookingRepository.save(booking);
-
-return "Booking completed successfully";
-}
 @PutMapping("/accept-job/{bookingId}")
 public String acceptJob(
 @PathVariable Long bookingId,
@@ -142,6 +126,9 @@ bookingRepository.save(booking);
 
 return "Job accepted successfully";
 }
+
+//////////////////// COMPLETE JOB + EARNINGS ////////////////////
+
 @PutMapping("/complete-job/{bookingId}")
 public String completeJob(
 @PathVariable Long bookingId,
@@ -162,12 +149,39 @@ if(booking.getStatus() != BookingStatus.CONFIRMED){
 throw new RuntimeException("Booking must be confirmed first");
 }
 
+/* 💰 EARNINGS CALCULATION */
+
+double price = booking.getService().getPrice();
+
+double commission = price * 0.2; // 20%
+double earning = price - commission;
+
+booking.setPlatformCommission(commission);
+booking.setProviderEarning(earning);
+
 booking.setStatus(BookingStatus.COMPLETED);
 
 bookingRepository.save(booking);
 
-return "Job completed successfully";
+return "Job completed. You earned ₹" + earning;
 }
 
+//////////////////// PROVIDER EARNINGS ////////////////////
+
+@GetMapping("/earnings")
+public Double getProviderEarnings(HttpServletRequest request){
+
+Number providerIdNumber = (Number) request.getAttribute("userId");
+Long providerId = providerIdNumber.longValue();
+
+List<Booking> bookings = bookingRepository.findByProviderId(providerId);
+
+double total = bookings.stream()
+.filter(b -> b.getStatus() == BookingStatus.COMPLETED)
+.mapToDouble(b -> b.getProviderEarning() != null ? b.getProviderEarning() : 0.0)
+.sum();
+
+return total;
+}
 
 }

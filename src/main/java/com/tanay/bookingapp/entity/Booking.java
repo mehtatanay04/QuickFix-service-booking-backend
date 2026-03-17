@@ -31,6 +31,24 @@ private String timeSlot;
 private String address;
 
 private String notes;
+private Double providerEarning;
+private Double platformCommission;
+
+public Double getProviderEarning() {
+	return providerEarning;
+}
+
+public void setProviderEarning(Double providerEarning) {
+	this.providerEarning = providerEarning;
+}
+
+public Double getPlatformCommission() {
+	return platformCommission;
+}
+
+public void setPlatformCommission(Double platformCommission) {
+	this.platformCommission = platformCommission;
+}
 
 @Enumerated(EnumType.STRING)
 private BookingStatus status;
