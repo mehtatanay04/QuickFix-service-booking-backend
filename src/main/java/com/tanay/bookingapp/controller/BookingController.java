@@ -18,7 +18,6 @@ public class BookingController {
 @Autowired
 private BookingService bookingService;
 
-
 @GetMapping("/my-bookings")
 public List<Booking> getUserBookings(HttpServletRequest request){
 
@@ -27,7 +26,6 @@ Long userId = userIdNumber.longValue();
 
 return bookingService.getUserBookings(userId);
 }
-
 
 @PostMapping("/book")
 public String createBooking(
@@ -39,6 +37,18 @@ Number userIdNumber = (Number) request.getAttribute("userId");
 Long userId = userIdNumber.longValue();
 
 return bookingService.createBooking(userId, dto);
+}
+
+@PutMapping("/cancel/{bookingId}")
+public String cancelBooking(
+@PathVariable Long bookingId,
+HttpServletRequest request
+){
+
+Number userIdNumber = (Number) request.getAttribute("userId");
+Long userId = userIdNumber.longValue();
+
+return bookingService.cancelBooking(userId, bookingId);
 }
 
 }

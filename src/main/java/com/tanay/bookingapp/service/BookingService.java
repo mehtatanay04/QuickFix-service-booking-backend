@@ -35,7 +35,25 @@ private ProviderRepository providerRepository;
 public List<Booking> getUserBookings(Long userId){
 return bookingRepository.findByUserId(userId);
 }
+public String cancelBooking(Long userId, Long bookingId){
 
+Booking booking = bookingRepository.findById(bookingId)
+.orElseThrow(() -> new RuntimeException("Booking not found"));
+
+if(!booking.getUser().getId().equals(userId)){
+throw new RuntimeException("Not your booking");
+}
+
+if(booking.getStatus() != BookingStatus.PENDING){
+throw new RuntimeException("Only pending bookings can be cancelled");
+}
+
+booking.setStatus(BookingStatus.CANCELLED);
+
+bookingRepository.save(booking);
+
+return "Booking cancelled successfully";
+}
 
 public String createBooking(Long userId, BookingRequestDTO dto){
 

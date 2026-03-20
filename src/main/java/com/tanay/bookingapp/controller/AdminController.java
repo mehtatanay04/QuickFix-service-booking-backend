@@ -1,6 +1,8 @@
 package com.tanay.bookingapp.controller;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -152,6 +154,30 @@ booking.setProvider(provider);
 bookingRepository.save(booking);
 
 return "Provider assigned successfully";
+}
+@GetMapping("/analytics")
+public Map<String, Object> getAnalytics(){
+
+List<Booking> bookings = bookingRepository.findAll();
+
+long totalBookings = bookings.size();
+
+double totalRevenue = bookings.stream()
+.filter(b -> b.getStatus() == BookingStatus.COMPLETED)
+.mapToDouble(b -> b.getService().getPrice())
+.sum();
+
+double totalCommission = bookings.stream()
+.filter(b -> b.getStatus() == BookingStatus.COMPLETED)
+.mapToDouble(b -> b.getPlatformCommission() != null ? b.getPlatformCommission() : 0.0)
+.sum();
+
+Map<String, Object> data = new HashMap<>();
+data.put("totalBookings", totalBookings);
+data.put("totalRevenue", totalRevenue);
+data.put("totalCommission", totalCommission);
+
+return data;
 }
 
 }
