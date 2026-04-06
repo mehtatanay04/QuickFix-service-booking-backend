@@ -1,10 +1,29 @@
-HELP.md
+# Build and Build Output
 target/
-.mvn/wrapper/maven-wrapper.jar
+build/
 !**/src/main/**/target/
 !**/src/test/**/target/
+!**/src/main/**/build/
+!**/src/test/**/build/
 
-### STS ###
+# Maven
+.mvn/wrapper/maven-wrapper.jar
+
+# Documentation Files (keep only README.md for main docs)
+HELP.md
+API_TEST_GUIDE.md
+COMPLETION_SUMMARY.md
+INDEX.md
+QUICK_REFERENCE.md
+README_TESTING.md
+TESTING_OVERVIEW.txt
+TEST_SUMMARY.md
+
+# Test/Demo Files
+test_api.cmd
+Postman_Collection.json
+
+# IDE - STS
 .apt_generated
 .classpath
 .factorypath
@@ -13,25 +32,30 @@ target/
 .springBeans
 .sts4-cache
 
-### IntelliJ IDEA ###
+# IDE - IntelliJ IDEA
 .idea
 *.iws
 *.iml
 *.ipr
 
-### NetBeans ###
+# IDE - NetBeans
 /nbproject/private/
 /nbbuild/
 /dist/
 /nbdist/
 /.nb-gradle/
-build/
-!**/src/main/**/build/
-!**/src/test/**/build/
 
-### VS Code ###
+# IDE - VS Code
 .vscode/
 
-# Local secrets
+# Environment and Local Configuration
+.env
+application-local.properties
 src/main/resources/application-local.properties
+
+# OS
+.DS_Store
+*.swp
+*.swo
+*~
 
